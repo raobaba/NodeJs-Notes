@@ -1,5 +1,6 @@
 const http = require('http');
 const fs = require("fs");
+const url = require('url');
 const html = fs.readFileSync('./index.html', 'utf-8')
 const products = JSON.parse(fs.readFileSync('../Data/products.json', 'utf-8'));
 const productListHtml = fs.readFileSync('./product-list.html', 'utf-8');
@@ -15,12 +16,14 @@ let productHtmlArray = products.map((prod) => {
     output = output.replace('{{%ID%}}', prod.id);
     output = output.replace('{{%ROM%}}', prod.ROM);
     output = output.replace('{{%DESC%}}', prod.Description);
-
+    output = output.replace('{{%ID%}}', prod.id);
     return output;
 })
 
 const server = http.createServer((req, res) => {
-    let path = req.url;
+    let { query, pathname: path } = url.parse(req.url, true);
+    console.log(URL);
+    //let path = req.url
     if (path === '/' || path === '/home') {
         res.writeHead(200, {
             'Content-Type': 'text/html',
@@ -40,7 +43,7 @@ const server = http.createServer((req, res) => {
         })
         res.end(html.replace(`{{%CONTENT%}}`, "You are in Contact Page"));
     } else if (path.toLocaleLowerCase() === '/products') {
-        let productResponseHtml = html.replace('{{%CONTENT%}}',productHtmlArray.join(''))
+        let productResponseHtml = html.replace('{{%CONTENT%}}', productHtmlArray.join(''))
         res.writeHead(200, { 'Content-Type': 'text/html' })
         res.end(productResponseHtml);
     } else {
