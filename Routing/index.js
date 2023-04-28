@@ -1,26 +1,17 @@
 const http = require('http');
 const fs = require("fs");
 const url = require('url');
+const events = require('events');
+const user = require("./user");
 const html = fs.readFileSync('./index.html', 'utf-8')
 const products = JSON.parse(fs.readFileSync('../Data/products.json', 'utf-8'));
 const productListHtml = fs.readFileSync('./product-list.html', 'utf-8');
-let productHtmlArray = products.map((prod) => {
-    let output = productListHtml.replace('{{%IMAGE%}}', prod.productImage);
-    output = output.replace('{{%NAME%}}', prod.name);
-    output = output.replace('{{%MODELNAME%}}', prod.modeName);
-    output = output.replace('{{%MODELNO%}}', prod.modelNumber);
-    output = output.replace('{{%SIZE%}}', prod.size);
-    output = output.replace('{{%CAMERA%}}', prod.camera);
-    output = output.replace('{{%PRICE%}}', prod.price);
-    output = output.replace('{{%COLOR%}}', prod.color);
-    output = output.replace('{{%ID%}}', prod.id);
-    output = output.replace('{{%ROM%}}', prod.ROM);
-    output = output.replace('{{%DESC%}}', prod.Description);
-    output = output.replace('{{%ID%}}', prod.id);
-    return output;
-})
+const productDetailHtml = fs.readFileSync('./product-details.html','utf-8');
+const replaceHtml = require('./html-module.js');
 
-const server = http.createServer((req, res) => {
+
+const server = http.createServer();
+server.on('request',(req, res) => {
     let { query, pathname: path } = url.parse(req.url, true);
     console.log(URL);
     //let path = req.url
@@ -43,9 +34,18 @@ const server = http.createServer((req, res) => {
         })
         res.end(html.replace(`{{%CONTENT%}}`, "You are in Contact Page"));
     } else if (path.toLocaleLowerCase() === '/products') {
-        let productResponseHtml = html.replace('{{%CONTENT%}}', productHtmlArray.join(''))
-        res.writeHead(200, { 'Content-Type': 'text/html' })
-        res.end(productResponseHtml);
+        if(!query.id){
+            let productHtmlArray = products.map((prod) => {
+                return replaceHtml(productListHtml, prod);
+            })
+            let productResponseHtml = html.replace('{{%CONTENT%}}', productHtmlArray.join(','));
+            res.writeHead(200, {'Content-Type': 'text/html' });
+            res.end(productResponseHtml);
+        } else {
+            let prod = products[query.id]
+            let productDetailResponseHtml = replaceHtml(productDetailHtml, prod);
+            res.end(html.replace('{{%CONTENT%}}', productDetailResponseHtml));
+        }
     } else {
         res.writeHead(404, {
             'Content-Type': 'text/html',
@@ -54,6 +54,20 @@ const server = http.createServer((req, res) => {
         res.end(html.replace(`{{%CONTENT%}}`, 'Error 404: Page Not Found'))
     }
 })
+
+let myEmitter = new user();
+
+myEmitter.on('userCreated', (id, name) => {
+    console.log(`A new user ${name} with ID ${id} is created!`)
+})
+
+myEmitter.on('userCreated', (id, name) => {
+    console.log(`A new user ${name} with ID ${id} is added to database!`)
+})
+
+myEmitter.emit('userCreated', 101, 'John');
+
+
 server.listen(3000, '127.0.0.1', () => {
     console.log('server is started')
 })
