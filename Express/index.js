@@ -44,6 +44,28 @@ app.post('/api/v1/movies',(req,res)=>{
     })
 })
 
+app.patch('/api/v1/movies/:id',(req,res)=>{
+    const id = req.params.id*1;
+    const movieToUpdate = movies.find(el=>el.id===id);
+    if(!movieToUpdate){
+        return res.status(404).json({
+            status:'failed',
+            message:`Movie with the ID ${id} is not Found`
+        })
+       }
+    const index = movies.indexOf(movieToUpdate);
+    Object.assign(movieToUpdate,req.body);
+    movies[index] = movieToUpdate;
+    fs.writeFile('./Movies.json',JSON.stringify(movies),(err)=>{
+        res.status(200).json({
+            status:'success',
+            data:{
+                movie:movieToUpdate
+            }
+        })
+    })
+})
+
 app.listen(3000,()=>{
     console.log('Server has Started...');
 })
