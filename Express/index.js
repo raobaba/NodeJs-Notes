@@ -3,7 +3,7 @@ const app = express();
 app.use(express.json());
 const fs = require('fs');
 const movies = JSON.parse(fs.readFileSync('./Movies.json'));
-
+//movies GET api/v1/movies
 app.get('/api/v1/movies',(req,res)=>{
     res.status(200).json({
         status:"success",
@@ -13,7 +13,23 @@ app.get('/api/v1/movies',(req,res)=>{
         }
     })
 })
-
+//movies GET by ID /api/v1/movies/:id
+app.get('/api/v1/movies/:id',(req,res)=>{
+   const id = req.params.id*1;
+   const movie = movies.find(el=>el.id===id);
+   if(!movie){
+    return res.status(404).json({
+        status:'failed',
+        message:`Movie with the ID ${id} is not Found`
+    })
+   }
+   res.status(200).json({
+    status:'success',
+    data:{
+        movie:movie
+    }
+   })
+})
 app.post('/api/v1/movies',(req,res)=>{
     const newId = movies[movies.length-1].id+1;
     const newMovie = Object.assign({id:newId},req.body);
