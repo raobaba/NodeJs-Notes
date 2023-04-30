@@ -1,5 +1,13 @@
 const fs = require('fs');
 const movies = JSON.parse(fs.readFileSync('./Movies.json'));
+const validateBody = (req,res,next)=>{
+    if(!req.body.name||!req.body.releaseYear||!req.body.duration){
+        res.status(400).json({
+            status:'failed',
+            message:'Not a valid movie data'
+        })
+    }
+}
 const checkId = (req,res,next,value)=>{
     console.log('Movie ID is '+ value);
     let movie = movies.find(el => el.id === value*1);
@@ -91,4 +99,4 @@ const deleteMovies = (req, res) => {
         })
     })
 }
-module.exports = { getMovies, getMoviesById, postMovies, patchMovies, deleteMovies,checkId }
+module.exports = { getMovies, getMoviesById, postMovies, patchMovies, deleteMovies,checkId,validateBody }
