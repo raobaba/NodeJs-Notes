@@ -1,5 +1,17 @@
 const fs = require('fs');
 const movies = JSON.parse(fs.readFileSync('./Movies.json'));
+const checkId = (req,res,next,value)=>{
+    console.log('Movie ID is '+ value);
+    let movie = movies.find(el => el.id === value*1);
+    console.log(movie)
+    if (!movie) {
+        return res.status(404).json({
+            status: 'failed',
+            message: `Movie with the ID ${value} is not Found`
+        })
+    }
+    next();
+}
 const getMovies = (req, res) => {
     res.status(200).json({
         status: "success",
@@ -11,13 +23,13 @@ const getMovies = (req, res) => {
 }
 const getMoviesById = (req, res) => {
     const id = req.params.id * 1;
-    const movie = movies.find(el => el.id === id);
-    if (!movie) {
-        return res.status(404).json({
-            status: 'failed',
-            message: `Movie with the ID ${id} is not Found`
-        })
-    }
+     let movie = movies.find(el => el.id === id);
+    // if (!movie) {
+    //     return res.status(404).json({
+    //         status: 'failed',
+    //         message: `Movie with the ID ${id} is not Found`
+    //     })
+    // }
     res.status(200).json({
         status: 'success',
         data: {
@@ -27,7 +39,7 @@ const getMoviesById = (req, res) => {
 }
 const postMovies = (req, res) => {
     const newId = movies[movies.length - 1].id + 1;
-    const newMovie = Object.assign({ id: newId }, req.body);
+    let newMovie = Object.assign({ id: newId }, req.body);
     movies.push(newMovie);
     fs.writeFile('./Movies.json', JSON.stringify(movies), (err, data) => {
         res.status(201).json({
@@ -40,13 +52,13 @@ const postMovies = (req, res) => {
 }
 const patchMovies = (req, res) => {
     const id = req.params.id * 1;
-    const movieToUpdate = movies.find(el => el.id === id);
-    if (!movieToUpdate) {
-        return res.status(404).json({
-            status: 'failed',
-            message: `Movie with the ID ${id} is not Found`
-        })
-    }
+    let movieToUpdate = movies.find(el => el.id === id);
+    // if (!movieToUpdate) {
+    //     return res.status(404).json({
+    //         status: 'failed',
+    //         message: `Movie with the ID ${id} is not Found`
+    //     })
+    // }
     const index = movies.indexOf(movieToUpdate);
     Object.assign(movieToUpdate, req.body);
     movies[index] = movieToUpdate;
@@ -61,13 +73,13 @@ const patchMovies = (req, res) => {
 }
 const deleteMovies = (req, res) => {
     const id = req.params.id * 1;
-    const movieToDelete = movies.find(el => el.id === id);
-    if (!movieToDelete) {
-        return res.status(404).json({
-            status: 'failed',
-            message: `Movie with the ID ${id} is not Found`
-        })
-    }
+    let movieToDelete = movies.find(el => el.id === id);
+    // if (!movieToDelete) {
+    //     return res.status(404).json({
+    //         status: 'failed',
+    //         message: `Movie with the ID ${id} is not Found`
+    //     })
+    // }
     const index = movies.indexOf(movieToDelete);
     movies.splice(index, 1);
     fs.writeFile('./Movies.json', JSON.stringify(movies), (err) => {
@@ -79,4 +91,4 @@ const deleteMovies = (req, res) => {
         })
     })
 }
-module.exports = { getMovies, getMoviesById, postMovies, patchMovies, deleteMovies }
+module.exports = { getMovies, getMoviesById, postMovies, patchMovies, deleteMovies,checkId }
