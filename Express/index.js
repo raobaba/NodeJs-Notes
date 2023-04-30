@@ -4,6 +4,7 @@ const morgan = require('morgan');
 app.use(express.json());
 app.use(morgan('tiny'));
 const fs = require('fs');
+const moviesRouter = express.Router();
 const movies = JSON.parse(fs.readFileSync('./Movies.json'));
 const getMovies = (req,res)=>{
     res.status(200).json({
@@ -91,14 +92,15 @@ const deleteMovies = (req,res)=>{
 // app.delete('/api/v1/movies/:id',deleteMovies)
 
 
-app.route('/api/v1/movies')
+moviesRouter.route('/')
 .get(getMovies)
 .post(postMovies);
 
-app.route('/api/v1/movies/:id')
+moviesRouter.route('/:id')
 .get(getMoviesById)
 .patch(patchMovies)
 .delete(deleteMovies);
+app.use('/api/v1/movies',moviesRouter)
 
 app.listen(3000,()=>{
     console.log('Server has Started...');
