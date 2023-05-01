@@ -3,14 +3,13 @@ const {
     getMoviesById,
     postMovies,
     patchMovies,
-    deleteMovies,
-    validateBody
+    deleteMovies
 } = require('../Controller/movieController')
 const express = require('express');
 const Router = express.Router();
 Router.route('/')
     .get(getMovies)
-    .post(validateBody,postMovies);
+    .post(postMovies);
 Router.route('/:id')
     .get(getMoviesById)
     .patch(patchMovies)
