@@ -13,7 +13,7 @@ app.use(express.static('./Public'));
 app.use('/api/v1/movies',Router)
 
 //MAKE CONNCTIONS TO DATABASE
-mongoose.connect(process.env.MOGNO_URL, {
+mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true
 }).then((conn) => {
     //console.log(conn);
@@ -23,28 +23,39 @@ mongoose.connect(process.env.MOGNO_URL, {
 });
 
 
-const movieSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        require:[true,'Name is required field'],
-        unique:true
-    },
-    description:{
-        type:String,
-        require:[true,'Description is required']
-    },
-    duration:{
-        type:Number,
-        require:[true,'Duration is require field']
-    },
-    rating:{
-        type:String,
-        default:1.1
-    }
-})
+// const movieSchema = new mongoose.Schema({
+//     name:{
+//         type:String,
+//         require:true
+//         },
+//     description:{
+//         type:String,
+//         require:true
+//     },
+//     duration:{
+//         type:Number,
+//         require:true
+//     },
+//     rating:{
+//         type:Number
+//     }
+// })
 
-const movieModel = mongoose.model('nodeNote',movieSchema);
+// const movieModel = mongoose.model('movie',movieSchema);
 
+
+// const testMovie = new movieModel({
+//     name:"KGF Chapter 1",
+//     description:"Powerful People make places powerful",
+//     duration:200,
+//     rating:9.0
+// })
+// testMovie.save()
+// .then(doc=>{
+//     console.log(doc);
+// }).catch(err=>{
+//     console.log(err);
+// })
 
 app.listen(process.env.PORT,()=>{
     console.log('Server has Started...');
