@@ -16,10 +16,35 @@ app.use('/api/v1/movies',Router)
 mongoose.connect(process.env.MOGNO_URL, {
     useNewUrlParser: true
 }).then((conn) => {
+    //console.log(conn);
     console.log('DB Connection Successful');
 }).catch((error) => {
     console.log('Some error has occured');
 });
+
+
+const movieSchema = new mongoose.Schema({
+    name:{
+        type:String,
+        require:[true,'Name is required field'],
+        unique:true
+    },
+    description:{
+        type:String,
+        require:[true,'Description is required']
+    },
+    duration:{
+        type:Number,
+        require:[true,'Duration is require field']
+    },
+    rating:{
+        type:String,
+        default:1.1
+    }
+})
+
+const movieModel = mongoose.model('nodeNote',movieSchema);
+
 
 app.listen(process.env.PORT,()=>{
     console.log('Server has Started...');
