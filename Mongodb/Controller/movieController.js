@@ -1,28 +1,55 @@
 const movieModel = require('../Model/movieModel.js');
 
-const getMovies = (req, res) => {
-
+const getMovies = async (req, res) => {
+    try {
+        const movie = await movieModel.find();
+        res.status(200).json({
+            status: 'success',
+            length: movie.length,
+            data: {
+                movie: movie
+            }
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            message: error.message
+        })
+    }
 }
-const getMoviesById = (req, res) => {
-
+const getMoviesById = async (req, res) => {
+    try {
+        const movie = await movieModel.findById(req.params.id);
+        res.status(200).json({
+            status: 'success',
+            data: {
+                movie: movie
+            }
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            message: error.message
+        })
+    }
 }
 const postMovies = async (req, res) => {
     const body = req.body;
-      try {
+    try {
         const newMovie = new movieModel(body);
         await newMovie.save();
         res.status(201).json({
-            status:'success',
-            data:{
-                movie:newMovie
+            status: 'success',
+            data: {
+                movie: newMovie
             }
         })
-      } catch (error) {
+    } catch (error) {
         res.status(400).json({
-            status:'failed',
-            message:error.message
+            status: 'failed',
+            message: error.message
         })
-      }
+    }
 }
 const patchMovies = (req, res) => {
 
