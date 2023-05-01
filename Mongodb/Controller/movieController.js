@@ -51,8 +51,21 @@ const postMovies = async (req, res) => {
         })
     }
 }
-const patchMovies = (req, res) => {
-
+const patchMovies = async (req, res) => {
+    try {
+        const updatedMovie = await movieModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        res.status(200).json({
+            status: "success",
+            data: {
+                movie: updatedMovie
+            }
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            message: error.message
+        })
+    }
 }
 const deleteMovies = (req, res) => {
 
