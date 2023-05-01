@@ -67,7 +67,18 @@ const patchMovies = async (req, res) => {
         })
     }
 }
-const deleteMovies = (req, res) => {
-
+const deleteMovies = async (req, res) => {
+    try {
+        await movieModel.findByIdAndDelete(req.params.id);
+        res.status(200).json({
+            status: "success",
+            data:`Movie name ${req.body.name} is successfully deleted`
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            message: error.message
+        })
+    }
 }
 module.exports = { getMovies, getMoviesById, postMovies, patchMovies, deleteMovies }
