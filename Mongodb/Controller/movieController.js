@@ -2,7 +2,8 @@ const movieModel = require('../Model/movieModel.js');
 
 const getMovies = async (req, res) => {
     try {
-        const movie = await movieModel.find();
+        console.log(req.query);
+        const movie = await movieModel.find(req.query);
         res.status(200).json({
             status: 'success',
             length: movie.length,
@@ -72,7 +73,7 @@ const deleteMovies = async (req, res) => {
         await movieModel.findByIdAndDelete(req.params.id);
         res.status(200).json({
             status: "success",
-            data:`Movie name ${req.body.name} is successfully deleted`
+            data: `Movie name ${req.body.name} is successfully deleted`
         });
     } catch (error) {
         res.status(400).json({
