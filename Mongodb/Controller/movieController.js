@@ -3,6 +3,12 @@ const movieModel = require('../Model/movieModel.js');
 const getMovies = async (req, res) => {
     try {
         console.log(req.query);
+        // const exludeField = ['sort','limit','page','fields'];
+        // const queryObj = {...req.query};
+        // exludeField.forEach((ele)=>{
+        //     delete queryObj[ele];
+        // })
+        // const movie = await movieModel.find(queryObj);
         const movie = await movieModel.find(req.query);
         res.status(200).json({
             status: 'success',
