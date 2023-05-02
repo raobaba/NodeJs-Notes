@@ -17,6 +17,15 @@ const getMovies = async (req, res) => {
         // const queryObj = JSON.parse(queryStr);
         // console.log(queryObj);
         // const movie = await movieModel.find(queryObj);
+        // const movie = await movieModel.find()
+        //                                    .where('duration')
+        //                                    .gte(req.query.duration)
+        //                                    .where('ratings')
+        //                                    .gte(req.query.ratings)
+        //                                    .where('price')
+        //                                    .lte(req.query.price);
+
+
         const movie = await movieModel.find(req.query);
         res.status(200).json({
             status: 'success',
