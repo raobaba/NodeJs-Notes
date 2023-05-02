@@ -11,13 +11,7 @@ const getMovies = async (req, res) => {
         // const movie = await movieModel.find(queryObj);
 
 
-
-        // const queryStr = JSON.stringify(req.query);
-        // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g,(match)=>`$${match}`)
-        // const queryObj = JSON.parse(queryStr);
-        // console.log(queryObj);
-        // const movie = await movieModel.find(queryObj);
-        // const movie = await movieModel.find()
+         // const movie = await movieModel.find()
         //                                    .where('duration')
         //                                    .gte(req.query.duration)
         //                                    .where('ratings')
@@ -26,7 +20,19 @@ const getMovies = async (req, res) => {
         //                                    .lte(req.query.price);
 
 
-        const movie = await movieModel.find(req.query);
+
+        const queryStr = JSON.stringify(req.query);
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g,(match)=>`$${match}`)
+        const queryObj = JSON.parse(queryStr);
+        // const movie = await movieModel.find(queryObj);
+        let query = movieModel.find(queryObj);
+        if(req.query.sort){
+            const sortBy = req.query.sort.split(',').join(' ');
+            query = query.sort(sortBy);
+        }else{
+            query = req.sort('-createdAt');
+        }
+        const movie = await query;
         res.status(200).json({
             status: 'success',
             length: movie.length,
