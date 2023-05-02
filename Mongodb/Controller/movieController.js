@@ -9,6 +9,14 @@ const getMovies = async (req, res) => {
         //     delete queryObj[ele];
         // })
         // const movie = await movieModel.find(queryObj);
+
+
+
+        // const queryStr = JSON.stringify(req.query);
+        // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g,(match)=>`$${match}`)
+        // const queryObj = JSON.parse(queryStr);
+        // console.log(queryObj);
+        // const movie = await movieModel.find(queryObj);
         const movie = await movieModel.find(req.query);
         res.status(200).json({
             status: 'success',
