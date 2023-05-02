@@ -3,36 +3,7 @@ const movieModel = require('../Model/movieModel.js');
 const getMovies = async (req, res) => {
     try {
         console.log(req.query);
-        // const exludeField = ['sort','limit','page','fields'];
-        // const queryObj = {...req.query};
-        // exludeField.forEach((ele)=>{
-        //     delete queryObj[ele];
-        // })
-        // const movie = await movieModel.find(queryObj);
-
-
-         // const movie = await movieModel.find()
-        //                                    .where('duration')
-        //                                    .gte(req.query.duration)
-        //                                    .where('ratings')
-        //                                    .gte(req.query.ratings)
-        //                                    .where('price')
-        //                                    .lte(req.query.price);
-
-
-
-        const queryStr = JSON.stringify(req.query);
-        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g,(match)=>`$${match}`)
-        const queryObj = JSON.parse(queryStr);
-        // const movie = await movieModel.find(queryObj);
-        let query = movieModel.find(queryObj);
-        if(req.query.sort){
-            const sortBy = req.query.sort.split(',').join(' ');
-            query = query.sort(sortBy);
-        }else{
-            query = req.sort('-createdAt');
-        }
-        const movie = await query;
+        const movie = await movieModel.find(req.query);
         res.status(200).json({
             status: 'success',
             length: movie.length,
